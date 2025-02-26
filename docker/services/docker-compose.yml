@@ -1,0 +1,67 @@
+
+services:
+  cart-service:
+    image: ${CART_SERVICE_IMAGE}:${CART_SERVICE_TAG}
+    container_name: cart-service
+    ports:
+      - "${CART_SERVICE_PORT}:${CART_SERVICE_PORT}"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
+      KAFKA_URL: ${KAFKA_URL}
+      AXON_URL: ${AXON_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      REDIS_URL: ${REDIS_URL}
+    networks:
+      - app-network
+
+
+  order-service:
+    image: ${ORDER_SERVICE_IMAGE}:${ORDER_SERVICE_TAG}
+    container_name: order-service
+    ports:
+      - "${ORDER_SERVICE_PORT}:${ORDER_SERVICE_PORT}"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
+      KAFKA_URL: kafka:9092
+      AXON_URL: ${AXON_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${POSTGRES_ORDER_PORT}/${ORDER_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_ORDER_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_ORDER_PASSWORD}
+    networks:
+      - app-network
+
+
+  payment-service:
+    image: ${PAYMENT_SERVICE_IMAGE}:${PAYMENT_SERVICE_TAG}
+    container_name: payment-service
+    ports:
+      - "${PAYMENT_SERVICE_PORT}:${PAYMENT_SERVICE_PORT}"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
+      KAFKA_URL: ${KAFKA_URL}
+      AXON_URL: ${AXON_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${POSTGRES_PAYMENT_PORT}/${PAYMENT_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_PAYMENT_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PAYMENT_PASSWORD}
+      STRIPE_SECRET_KEY: sk_test_51QOkV0C7L3LSlZxLrC737OiuTQvfS9DNvAZODU1gAbZGs7RQKKikxCF5bcxZBo3d0FS8AqcsAZ3BhPKoNXFWiClu00fjiWcx6u
+    networks:
+      - app-network
+
+  product-catalog-service:
+    image: ${PRODUCT_SERVICE_IMAGE}:${PRODUCT_SERVICE_TAG}
+    container_name: product-catalog-service
+    ports:
+      - "${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
+      KAFKA_URL: ${KAFKA_URL}
+      AXON_URL: ${AXON_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      MONGODB_URL : ${MONGODB_URL}
+    networks:
+        - app-network
+networks:
+  app-network:
+    external: true

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-payment-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-payment-service-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-payment-service-app
+    spec:
+      containers:
+          - name: {{ .Release.Name }}-payment-service-app
+            image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            ports:
+              - containerPort: 2026
+            env:
+              - name: SPRING_DATASOURCE_URL
+                value: {{ include "spring-app.postgresqlURL" . | quote }}
+              - name: SPRING_DATASOURCE_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: POSTGRES_USER
+              - name: SPRING_DATASOURCE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: POSTGRES_PASSWORD
+              - name: SPRING_PROFILES_ACTIVE
+                value: dep
+              - name: KAFKA_URL
+                value: kafka-service:9092
+              - name: AXON_URL
+                value: axonserver-grpc:8124
+              - name: STRIPE_SECRET_KEY
+                value: sk_test_51QOkV0C7L3LSlZxLrC737OiuTQvfS9DNvAZODU1gAbZGs7RQKKikxCF5bcxZBo3d0FS8AqcsAZ3BhPKoNXFWiClu00fjiWcx6u
+              - name: KEYCLOAK_URL
+                value: "http://172.22.0.204:8080/auth/realms/e-commerce"

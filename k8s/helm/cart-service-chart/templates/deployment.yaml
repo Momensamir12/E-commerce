@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: cart-service-app
+  template:
+    metadata:
+      labels:
+        app: cart-service-app
+    spec:
+      containers:
+          - name: cart-service-app
+            image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            ports:
+              - containerPort: 2020
+            env:
+              - name: SPRING_PROFILES_ACTIVE
+                value: dep
+              - name: KAFKA_URL
+                value: kafka-service:9092
+              - name: AXON_URL
+                value: axonserver-grpc:8124
+              - name: KEYCLOAK_URL
+                value: "http://172.22.0.204:8080/auth/realms/e-commerce"
+              - name: REDIS_URL
+                value: redis

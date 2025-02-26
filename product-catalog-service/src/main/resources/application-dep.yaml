@@ -1,0 +1,55 @@
+server:
+  port: 2025
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}
+  mongo:
+    database-name: axon
+    token-store:
+      enabled: true
+    saga-store:
+      enabled: true
+    event-store:
+      enabled: true
+
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+axon:
+  axonserver:
+    servers: ${AXON_URL}
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  deserializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    client-id: kafka-axon-example
+    default-topic: local.event
+    properties:
+      security.protocol: PLAINTEXT
+
+    publisher:
+      confirmation-mode: none
+
+    producer:
+      retries: 5
+      event-processor-mode: tracking

@@ -1,0 +1,14 @@
+spring:
+  config:
+    import:
+      optional:/home/as/Downloads/e-commerce-project-master/payment-service/.env[.properties],optional:file:.env[.properties]
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+server:
+  port: 2026
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url : true
+    path: "/payment-service/swagger-ui"
+

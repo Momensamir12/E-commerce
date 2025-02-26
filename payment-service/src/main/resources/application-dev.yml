@@ -1,0 +1,71 @@
+spring:
+  datasource:
+    username: user-name
+    password: strong-password
+    url: jdbc:postgresql://localhost:5432/postgres
+    platform: postgres
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://172.22.0.204:8080/auth/realms/e-commerce
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    jpa:
+      hibernate:
+        ddl-auto: create-drop
+      #    show-sql: true
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+
+stripe:
+  secretKey: sk_test_51QOkV0C7L3LSlZxLrC737OiuTQvfS9DNvAZODU1gAbZGs7RQKKikxCF5bcxZBo3d0FS8AqcsAZ3BhPKoNXFWiClu00fjiWcx6u
+
+
+axon:
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  deserializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  kafka:
+    bootstrap-servers: localhost:29092
+    client-id: kafka-axon-example
+    default-topic: local.event
+    properties:
+      security.protocol: PLAINTEXT
+
+    publisher:
+      confirmation-mode: none
+
+    producer:
+      retries: 5
+      event-processor-mode: tracking
+
+    fetcher:
+      poll-timeout: 3000
+
+    consumer:
+      enable-auto-commit: true
+      auto-commit-interval: 3000

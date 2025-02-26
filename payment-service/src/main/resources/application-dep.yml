@@ -1,0 +1,67 @@
+spring:
+  #Database properties
+  datasource:
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    platform: postgres
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}
+#kafka properties
+kafka:
+  bootstrap-servers: ${KAFKA_URL}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+consumer:
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+#Axon server properties
+axon:
+  axonserver:
+    servers: ${AXON_URL}
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  deserializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    client-id: kafka-axon-example
+    default-topic: local.event
+    properties:
+      security.protocol: PLAINTEXT
+
+    publisher:
+      confirmation-mode: none
+
+    producer:
+      retries: 5
+      event-processor-mode: tracking
+
+    fetcher:
+      poll-timeout: 9000
+
+    consumer:
+      enable-auto-commit: true
+      auto-commit-interval: 9000
+      event-processor-mode: tracking
+#Stripe properties
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}

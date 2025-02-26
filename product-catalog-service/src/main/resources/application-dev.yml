@@ -1,0 +1,61 @@
+server:
+  port: 2025
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      host: localhost
+      username: ${SPRING_DATASOURCE_USERNAME}
+      password: ${SPRING_DATASOURCE_PASSWORD}
+      database: springboot_mongo
+      port: 27017
+  mongo:
+    database-name: axon
+    token-store:
+      enabled: true
+    saga-store:
+      enabled: true
+    event-store:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:7080/realms/e-commerce%20"
+
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+axon:
+  axonserver:
+    servers: ${AXON_URL}
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  deserializer:
+    general: jackson
+    events: jackson
+    messages: jackson
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    client-id: kafka-axon-example
+    default-topic: local.event
+    properties:
+      security.protocol: PLAINTEXT
+
+    publisher:
+      confirmation-mode: none
+
+    producer:
+      retries: 5
+      event-processor-mode: tracking
+
+

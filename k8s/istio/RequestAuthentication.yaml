@@ -1,0 +1,14 @@
+
+  apiVersion: security.istio.io/v1beta1
+  kind: RequestAuthentication
+  metadata:
+    name: jwt-auth
+    namespace: istio-system
+  spec:
+    selector:
+      matchLabels:
+        istio: ingressgateway
+    jwtRules:
+    - issuer: "http://172.22.0.204:8080/auth/realms/e-commerce" # Replace with your realm
+      jwksUri: "http://172.22.0.204:8080/auth/realms/e-commerce/protocol/openid-connect/certs"
+      forwardOriginalToken: true

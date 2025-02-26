@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-product-catalog-service-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-product-catalog-service-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-product-catalog-service-app
+    spec:
+      containers:
+          - name: {{ .Release.Name }}-product-catalog-service-app
+            image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            ports:
+              - containerPort: 2025
+            env:
+              - name: SPRING_PROFILES_ACTIVE
+                value: dep
+              - name: MONGODB_URL
+                value: "mongodb://your-root-username:your-root-password@mongodb:27017/springboot_mongo?authSource=admin"
+              - name: SPRING_DATASOURCE_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: mongodb-secret
+                    key: MONGO_INITDB_ROOT_USERNAME
+              - name: SPRING_DATASOURCE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: mongodb-secret
+                    key: MONGO_INITDB_ROOT_PASSWORD
+              - name: KAFKA_URL
+                value: kafka-service:9092
+              - name: AXON_URL
+                value: axonserver-grpc:8124
+              - name: KEYCLOAK_URL
+                value: http://172.22.0.204:8080/auth/realms/e-commerce
