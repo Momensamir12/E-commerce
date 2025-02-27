@@ -1,79 +1,151 @@
+
 # E-commerce Microservices
-This project is a demonstration of a microservices architecture for an e-commerce platform
 
-Project Overview
-This project consists of four main services, each responsible for a specific domain within the e-commerce platform:
+Distributed E-commerce back-end platform designed for scalability, security, and high availability. The platform follows a microservices architecture with event-driven communication, ensuring resilience and fault tolerance.
+## Features
 
-Product Catalog Service
+✅ Microservices-Based Architecture - Independently deployable, modular services.
 
-Manages products and inventory.
-Allows public access to view products, while only admins can add, remove, or update products.
-Reduces product inventory upon order completion.
-Database: MongoDB
-Order Service
+✅ Secure API Gateway
 
-Handles order placement and completion.
-Sends events to notify other services upon order placement.
-Database: PostgreSQL
-Payment Service
+✅ Authentication & Authorization - Centralized access control with role-based security.
 
-Integrates with Stripe to handle payments for orders.
-Designed to support additional payment providers in the future.
-Database: PostgreSQL
-Cart Service
+✅ Event-Driven Communication - Services communicate asynchronously to improve responsiveness.
 
-Manages adding products to the cart for later checkout.
-Database: Redis
-Key Features
-Microservices Architecture: Each service is independently deployable and scalable.
-Spring Boot: All services are built using Spring Boot for rapid development and production-ready applications.
-Security: Services are secured as OAuth2 resource servers with Keycloak as the authorization server.
-Saga Pattern: Implemented using the Axon Framework to handle rollbacks on failures or complete orders.
-Event-Driven Communication: Utilizes Kafka as an event bus for asynchronous communication between services.
-Deployment: Services are containerized and can be deployed on a local Kubernetes cluster or using Docker Compose for quick local testing.
-Getting Started
-Prerequisites
-Java 11 or higher
-Docker and Docker Compose
-Kubernetes (for local cluster deployment)
-MongoDB, PostgreSQL, and Redis instances
-Installation
-Clone the Repository
+✅ Transaction Management - Distributed transactions with rollback mechanisms ensure consistency.
 
-BASH
+✅ Containerized & Orchestrated - Supports running in kubernetes
 
-git clone https://github.com/yourusername/ecommerce-microservices.git
-cd ecommerce-microservices
-Set Up Environment Variables
+## Architecture
 
-Configure your environment variables for database connections, Stripe API keys, and Keycloak settings.
+## Services Breakdown
 
-Build and Run with Docker Compose
+1. Product Catalog Service
+   Manages products and inventory.
+   Reduces stock on order completion.
+   Publicly accessible for viewing, but only admins can add/remove/update products.
 
-BASH
+2. Order Service
+   Handles order placement & completion.
+   Publishes events when an order is placed.
 
-docker-compose up --build
-Deploy on Kubernetes
 
-Ensure your Kubernetes cluster is running and apply the configurations:
+3. Payment Service
+   Handles payments via Stripe.
+   Future support for multiple payment providers.
 
-BASH
+4. Cart Service
+   Stores user cart items before checkout.
+## Deployment
 
-kubectl apply -f k8s/
-Usage
-Access the services via their respective endpoints.
-Use Keycloak for authentication and authorization.
-Monitor events and logs to understand the flow of operations and communication between services.
-Future Enhancements
-Add support for additional payment providers.
-Implement a user service for managing customer accounts.
-Enhance monitoring and logging with tools like Prometheus and Grafana.
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
+first , clone the repo and build the jar files
 
-License
-This project is licensed under the MIT License.
+on linux :
 
-Contact
-For any questions or feedback, please contact me at [your-email@example.com].
+```bash
+  git clone https://github.com/Momensamir12/E-commerce.git
+  cd E-commerce
 
+  # script to build docker images
+  chmod +x build.sh
+
+  chmod +x docker-compose-script.sh
+  ./build.sh
+```
+
+
+Kubernetes
+-
+You need to have a cluster with load balancers enabled and istio installed.
+
+First run k8s-infra.sh script to setup databases , axon , keycloak , istio manifests
+
+gateway authentication isn't enabled for easier access
+
+```bash
+  chmod +x k8s-infra.sh
+  ./k8s-infra.sh 
+```
+then run helm script to install all the services
+
+```bash
+  chmod +x helm.sh
+  ./helm.sh 
+```
+you can then access the services through istio's gateway api
+```http
+
+http://$ISTIO_GATEWAY_IP/** 
+  
+```
+Jwt Tokens
+-
+to fully access the platform you need to attach a valid jwt token to your requests using curl or an api tool like postman
+
+```bash
+
+# Request a token from Keycloak
+TOKEN_RESPONSE=$(curl -s -X POST "http://$KC_IP:8080/auth/realms/e-commerce/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=e-commerce-backend" \
+  -d "client_secret=your-client-secret" \
+  -d "username=admin" \
+  -d "password=123")
+
+# Extract the access token from the response using jq
+ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
+
+# Check if the token was successfully retrieved
+if [ "$ACCESS_TOKEN" == "null" ] || [ -z "$ACCESS_TOKEN" ]; then
+  echo "Failed to obtain access token. Response: $TOKEN_RESPONSE"
+else
+  echo "Access token obtained: $ACCESS_TOKEN"
+fi
+```
+
+you can then access all the back end services endpoints after attaching the token to the request headers
+
+
+## API Reference
+
+Swagger api documentation endpoints are available for each service on the path
+'/service-name/swagger-ui'
+
+Product catalog service :
+
+port : 2025
+```http
+  /product-service/swagger-ui
+```
+order service
+
+port : 2022
+```http
+  /order-service/swagger-ui
+```
+payment service :
+
+port : 2026
+```http
+  /payment-service/swagger-ui
+```
+cart service :
+
+port: 2020
+```http
+  /cart-service/swagger-ui
+```
+
+
+
+## Technology Stack
+
+- java 23
+- Spring Boot 3.3.4
+- Keycloak (OAuth2 provider)
+- Axon Framework 4.10.1
+- Kafka
+- Docker & Kubernetes (Containerization & orchestration)
+- MongoDB, PostgreSQL, Redis (Databases)
+- Stripe API (Payment integration)
