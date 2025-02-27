@@ -1,11 +1,11 @@
 directories=(
     "k8s/istio-gateway"
-#    "k8s/axon"
-#    "k8s/kafka"
-#    "k8s/keycloak"
-#    "k8s/mongodb"
-#    "k8s/postgresql"
-#    "k8s/redis"
+    "k8s/axon"
+    "k8s/kafka"
+    "k8s/keycloak"
+    "k8s/mongodb"
+    "k8s/postgresql"
+    "k8s/redis"
 )
 
 # Loop through each directory
