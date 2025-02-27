@@ -49,8 +49,6 @@ on linux :
 
   # script to build docker images
   chmod +x build.sh
-
-  chmod +x docker-compose-script.sh
   ./build.sh
 ```
 
