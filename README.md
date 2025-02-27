@@ -17,7 +17,7 @@ Distributed E-commerce back-end platform designed for scalability, security, and
 ✅ Containerized & Orchestrated - Supports running in kubernetes
 
 ## Architecture
-![Alt text](archeticture/diagram-export-2-27-2025-6_53_21-PM.png)
+![Alt text](architecture/diagram-export-2-27-2025-6_53_21-PM.png)
 
 ## Services Breakdown
 
