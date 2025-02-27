@@ -3,7 +3,6 @@
   kind: RequestAuthentication
   metadata:
     name: jwt-auth
-    namespace: istio-system
   spec:
     selector:
       matchLabels:

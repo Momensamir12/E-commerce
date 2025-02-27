@@ -1,4 +1,3 @@
-# pgadmin-mongodb-deployment.yaml
 apiVersion: v1
 kind: Secret
 metadata:

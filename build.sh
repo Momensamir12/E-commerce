@@ -11,11 +11,9 @@ services=(
   ["payment-service"]="payment-service"
   ["product-catalog-service"]="product-catalog-service"
 
-
-  # Add more services as needed
 )
-#cd "common" && ./mvnw clean install -DskipTests
-#cd ..
+cd "common" && ./mvnw clean install -DskipTests
+cd ..
 # Function to build the JAR file
 build_jar() {
   local service_path=$1

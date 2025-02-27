@@ -1,11 +1,11 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: jwt-auth
+  name: jwt-auth-kc
 spec:
   selector:
     matchLabels:
-      app: keycloak
+      istio: ingressgateway
   action: ALLOW
   rules:
     - from:

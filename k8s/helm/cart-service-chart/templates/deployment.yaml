@@ -26,6 +26,9 @@ spec:
               - name: AXON_URL
                 value: axonserver-grpc:8124
               - name: KEYCLOAK_URL
-                value: "http://172.22.0.204:8080/auth/realms/e-commerce"
+                valueFrom:
+                  configMapKeyRef:
+                    name: issuer-url
+                    key: ISSUER_URL
               - name: REDIS_URL
                 value: redis

@@ -40,4 +40,7 @@ spec:
               - name: STRIPE_SECRET_KEY
                 value: sk_test_51QOkV0C7L3LSlZxLrC737OiuTQvfS9DNvAZODU1gAbZGs7RQKKikxCF5bcxZBo3d0FS8AqcsAZ3BhPKoNXFWiClu00fjiWcx6u
               - name: KEYCLOAK_URL
-                value: "http://172.22.0.204:8080/auth/realms/e-commerce"
+                valueFrom:
+                  configMapKeyRef:
+                    name: issuer-url
+                    key: ISSUER_URL

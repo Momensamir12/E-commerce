@@ -58,8 +58,6 @@ spec:
             - name : KC_PROXY_HEADERS
               value : forwarded
 
-
-
           ports:
             - containerPort: 8080
           volumeMounts:
