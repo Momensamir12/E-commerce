@@ -1,11 +1,11 @@
 directories=(
-    "k8s/istio"
-    "k8s/axon"
-    "k8s/kafka"
-    "k8s/keycloak"
-    "k8s/mongodb"
-    "k8s/postgresql"
-    "k8s/redis"
+    "k8s/istio-gateway"
+#    "k8s/axon"
+#    "k8s/kafka"
+#    "k8s/keycloak"
+#    "k8s/mongodb"
+#    "k8s/postgresql"
+#    "k8s/redis"
 )
 
 # Loop through each directory
@@ -23,16 +23,18 @@ done
 
 
 # Get the external IP of the load balancer
-LOAD_BALANCER_IP=$(kubectl get svc keycloak -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+KC_IP=$(kubectl get svc keycloak -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 ISTIO_GATEWAY_IP=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
+export KC_IP
+export ISTIO_GATEWAY_IP
 # Update a ConfigMap with the IP
 kubectl create configmap istio-gateway-ip --from-literal=GATEWAY_IP=$ISTIO_GATEWAY_IP --dry-run=client -o yaml | kubectl apply -f -
 
 # Construct the issuer URL
-ISSUER_URL="http://$LOAD_BALANCER_IP:8080/auth/realms/e-commerce"
-JWKS_URL="http://$LOAD_BALANCER_IP:8080/auth/realms/e-commerce/protocol/openid-connect/certs"
+ISSUER_URL="http://$KC_IP:8080/auth/realms/e-commerce"
+JWKS_URL="http://$KC_IP:8080/auth/realms/e-commerce/protocol/openid-connect/certs"
 
 
 # Update a ConfigMap with the issuer URL
