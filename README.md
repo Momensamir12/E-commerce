@@ -17,6 +17,7 @@ Distributed E-commerce back-end platform designed for scalability, security, and
 ✅ Containerized & Orchestrated - Supports running in kubernetes
 
 ## Architecture
+![Alt text](archeticture/diagram-export-2-27-2025-6_53_21-PM.png)
 
 ## Services Breakdown
 
@@ -48,8 +49,6 @@ on linux :
 
   # script to build docker images
   chmod +x build.sh
-
-  chmod +x docker-compose-script.sh
   ./build.sh
 ```
 
